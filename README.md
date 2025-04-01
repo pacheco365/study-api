@@ -63,9 +63,3 @@ cd study-api
 ```
 
 ---
-
-## 📬 Contato
-
-Caso tenha dúvidas ou sugestões, fique à vontade para abrir uma issue ou me contatar diretamente.
-
----
