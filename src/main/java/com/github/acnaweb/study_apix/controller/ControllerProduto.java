@@ -14,35 +14,35 @@ import com.github.acnaweb.study_apix.dto.ProdutoRequestCreate;
 import com.github.acnaweb.study_apix.model.Produto;
 import com.github.acnaweb.study_apix.service.ProdutoService;
 
-@RestController
-@RequestMapping("produtos")
+@RestController //Isso indica que é um Controlador RESTful, que faz requisições como GET, POST, DELETE e retornar isso
+@RequestMapping("produtos") //Isso significa que todos os métodos dessa classe terão o prefixo /produtos no caminho da URL, O método anotado com @PostMapping será acessado em POST /produtos
 public class ControllerProduto {
 
-    @Autowired
+    @Autowired //Autowired serve pra indicar que produtoService acessa/vira ProdutoService
     private ProdutoService produtoService;
 
-    @PostMapping
-    public ResponseEntity<Produto> 
-                create(@RequestBody ProdutoRequestCreate dto) {
+    @PostMapping //indica que este método será chamado quando uma requisição POST for feita para o endpoint /produtos.
+    public ResponseEntity<Produto> //ResponseEntity controi as respostas HTTP(requisições). <Produto> indica que o corpo da resposta conterá um objeto do tipo Produto.
+                create(@RequestBody ProdutoRequestCreate dto) { //@RequestBody indica que o corpo da requisição (geralmente JSON) será convertido em um objeto do tipo ProdutoRequestCreate.
 
-        Produto produto = produtoService.save(dto);
+        Produto produto = produtoService.save(dto); //dando o post no banco de dados com o save 
 
-        return ResponseEntity.status(201).body(produto);
+        return ResponseEntity.status(201).body(produto); //Indica que funcionou
     }
 
-    @PutMapping
-    public ResponseEntity<String> update() {
+    @PutMapping //Put é a requisição para fazer um update no banco de dados
+    public ResponseEntity<String> update() { //Nesse caso o update vai ser apenas a string ja que o id é fixo
         return ResponseEntity.status(200).body("Produto atualizado");
     }
 
-    @GetMapping
+    @GetMapping //Get é a requisição para achar algo nesse banco de dados
     public ResponseEntity<String> find() {
-        return ResponseEntity.status(200).body("uva");
+        return ResponseEntity.status(200).body("Produto encontrado"); 
     }
 
     @DeleteMapping
     public ResponseEntity<Void> delete() {
-        return ResponseEntity.status(204).build();
+        return ResponseEntity.status(204).build();//Aqui ao invés de body estamos usando build pq no delete não precisa retornar um corpo como resposta
     }
 
 }
