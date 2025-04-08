@@ -7,6 +7,9 @@ import com.github.acnaweb.study_apix.dto.ProdutoRequestCreate;
 import com.github.acnaweb.study_apix.model.Produto;
 import com.github.acnaweb.study_apix.repository.ProdutoRepository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class ProdutoService { //Essa classe ta sendo responsável por adicionar novos produtos dentro do banco de dados
 
@@ -21,4 +24,20 @@ public class ProdutoService { //Essa classe ta sendo responsável por adicionar 
         return produtoRepository.save(produto); //Aqui estamos dando o INSERT no banco de dados
     }
 
+    //Método que retorna tudo que tem no banco de dados, no caso produtos
+    public List<Produto> findAll() {
+        return produtoRepository.findAll();
+    }
+
+    public Optional<Produto> findById(Long id) {
+           return produtoRepository.findById(id);
+    }
+
+    public boolean deleteById(Long id){
+        if (produtoRepository.existsById(id)){
+            produtoRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 }
