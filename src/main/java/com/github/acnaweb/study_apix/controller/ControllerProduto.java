@@ -5,12 +5,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.github.acnaweb.study_apix.dto.ProdutoRequestCreate;
+import com.github.acnaweb.study_apix.dto.ProdutoRequestUpdate;
+import com.github.acnaweb.study_apix.dto.ProdutoResponse;
 import com.github.acnaweb.study_apix.model.Produto;
 import com.github.acnaweb.study_apix.service.ProdutoService;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController //Isso indica que é um Controlador RESTful, que faz requisições como GET, POST, DELETE e retornar isso
 @RequestMapping("produtos") //Isso significa que todos os métodos dessa classe terão o prefixo /produtos no caminho da URL, O método anotado com @PostMapping será acessado em POST /produtos
@@ -28,17 +28,34 @@ public class ControllerProduto {
         return ResponseEntity.status(201).body(produto); //Indica que funcionou
     }
 
-    @PutMapping
-    public ResponseEntity<String> update() { //Nesse caso o update vai ser apenas a string ja que o id é fixo
-        return ResponseEntity.status(200).body("Produto atualizado");
+
+    //Método que atualiza um produto, ele recebe o id do produto que queremos atualizar e o dto que contém os dados atualizados
+    //O método é chamado quando uma requisição PUT é feita para o endpoint /produtos/{id}, onde {id} é o ID do produto a ser atualizado.
+    @PutMapping("{id}")
+    public ResponseEntity<ProdutoResponse> update(
+				@PathVariable Long id, 
+				@RequestBody ProdutoRequestUpdate dto) {
+               
+        return produtoService.update(id, dto)
+                    .map(produto -> { 
+                        ProdutoResponse response = new ProdutoResponse();
+                        response.setId(produto.getId());
+                        response.setNome(produto.getNome());
+                        return ResponseEntity.status(200).body(response);
+                    })                  
+                    .orElse(ResponseEntity.notFound().build());        
     }
 
+
+    //Método que retorna tudo que tem no banco de dados, no caso produtos
     @GetMapping
     public ResponseEntity<List<Produto>> findAll() { //List<Produtos> é o tipo que iremos retornar nesse método
         List<Produto> produtos = produtoService.findAll(); //criamos uma lista generica
         return ResponseEntity.status(200).body(produtos);
     }
 
+
+    //Método que retorna um produto específico, ele recebe o id do produto que queremos encontrar
     @GetMapping("{id}")
     public ResponseEntity<Produto> findById(@PathVariable Long id) { //@PathVariable informa que a variavel id vai ser recebida pela url
         return produtoService.findById(id)
@@ -47,6 +64,7 @@ public class ControllerProduto {
     }
 
 
+    //Método que deleta um produto específico, ele recebe o id do produto que queremos deletar
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         boolean result = produtoService.deleteById(id);
